@@ -10,7 +10,7 @@ module.exports = {
         surface: '#F9FAFB',       // Card/off-white
         primary: '#1F2937',       // Text utama (dark gray)
         secondary: '#6B7280',     // Text muted
-        accent: '#6366F1',        // Muted indigo (satu accent only, calm)
+        accent: '#0D9488',        // Muted indigo (satu accent only, calm)
         border: '#E5E7EB',
       },
       fontFamily: {

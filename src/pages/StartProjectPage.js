@@ -39,10 +39,10 @@ const StartProjectPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background flex flex-col justify-center px-8 py-16">
+        <div className="min-h-screen bg-background flex flex-col justify-center px-8 py-20">
             <div className="max-w-7xl mx-auto w-full">
                 {/* Hero Section */}
-                <header className="text-center mb-20">
+                <header className="text-center mb-24">
                     <h1 className="text-6xl md:text-8xl font-light text-primary tracking-tight mb-6">
                         Start a New Project
                     </h1>
@@ -51,14 +51,19 @@ const StartProjectPage = () => {
                     </p>
                 </header>
 
-                {/* Option Cards – Elegant & Spacious */}
+                {/* Option Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
 
                     {/* Quick Start */}
                     <div
-                        className="bg-surface rounded-3xl border border-border/50 p-12 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                        className="group bg-surface rounded-3xl border border-border/50 p-12 shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
                         onClick={() => document.getElementById('quick-input')?.focus()}
                     >
+                        <div className="w-16 h-16 mb-8 text-accent/80">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
                         <h3 className="text-3xl font-medium text-primary mb-4">Quick Start</h3>
                         <p className="text-lg text-secondary leading-relaxed mb-10">
                             Instantly create a project with a name and a clean default workflow.
@@ -86,8 +91,14 @@ const StartProjectPage = () => {
                     {/* Guided Setup */}
                     <div
                         onClick={handleGuidedSetup}
-                        className="bg-surface rounded-3xl border border-border/50 p-12 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                        className="group bg-surface rounded-3xl border border-border/50 p-12 shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
                     >
+                        <div className="w-16 h-16 mb-8 text-accent/80">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <path d="M12 2L2 12h3v8h14v-8h3L12 2z" />
+                                <path d="M9 22V12h6v10" />
+                            </svg>
+                        </div>
                         <h3 className="text-3xl font-medium text-primary mb-4">Guided Setup</h3>
                         <p className="text-lg text-secondary leading-relaxed mb-10">
                             Define your main goal, deadline, project type, and customize the workflow step by step.
@@ -100,8 +111,16 @@ const StartProjectPage = () => {
                     {/* From Template */}
                     <div
                         onClick={handleTemplateStart}
-                        className="bg-surface rounded-3xl border border-border/50 p-12 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                        className="group bg-surface rounded-3xl border border-border/50 p-12 shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
                     >
+                        <div className="w-16 h-16 mb-8 text-accent/80">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <rect x="3" y="3" width="7" height="7" rx="1" />
+                                <rect x="14" y="3" width="7" height="7" rx="1" />
+                                <rect x="3" y="14" width="7" height="7" rx="1" />
+                                <rect x="14" y="14" width="7" height="7" rx="1" />
+                            </svg>
+                        </div>
                         <h3 className="text-3xl font-medium text-primary mb-4">From Template</h3>
                         <p className="text-lg text-secondary leading-relaxed mb-10">
                             Start from curated templates for study, fitness, work sprints, or personal growth.
@@ -113,8 +132,7 @@ const StartProjectPage = () => {
 
                 </div>
 
-                {/* Footer Note */}
-                <footer className="text-center mt-24">
+                <footer className="text-center mt-32">
                     <p className="text-sm text-muted">
                         All projects are saved locally in your browser — no account required.
                     </p>
