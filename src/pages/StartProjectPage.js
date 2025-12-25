@@ -27,6 +27,23 @@ const StartProjectPage = () => {
         };
 
         dispatch({ type: 'CREATE_PROJECT', payload: newProject });
+
+        // Sample tasks otomatis
+        const sampleTasks = [
+            { id: generateId(), title: 'Design homepage mockup', description: 'Create high-fidelity designs in Figma', priority: 'High', dueDate: null, estimatedTime: '4h', tags: ['design'], status: 'To Do' },
+            { id: generateId(), title: 'Set up React project', description: 'Initialize with Tailwind and routing', priority: 'Medium', dueDate: null, estimatedTime: '2h', tags: ['development'], status: 'In Progress' },
+            { id: generateId(), title: 'Research competitors', description: 'Analyze top 5 productivity apps', priority: 'Low', dueDate: null, estimatedTime: '3h', tags: ['research'], status: 'Backlog' },
+            { id: generateId(), title: 'Write user stories', description: 'Define core features from user perspective', priority: 'High', dueDate: null, estimatedTime: '2h', tags: ['planning'], status: 'To Do' },
+            { id: generateId(), title: 'Deploy to Vercel', description: 'Set up CI/CD pipeline', priority: 'Medium', dueDate: null, estimatedTime: '1h', tags: ['deployment'], status: 'Done' },
+        ];
+
+        sampleTasks.forEach(task => {
+            dispatch({
+                type: 'ADD_TASK',
+                payload: { ...task, projectId: newProject.id },
+            });
+        });
+
         navigate('/dashboard');
     };
 

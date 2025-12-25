@@ -47,26 +47,41 @@ const reducer = (state, action) => {
             };
 
         case 'ADD_TASK':
-            const projectId = state.activeProjectId;
-            const newTask = { id: generateId(), ...action.payload };
+            const projectIdAdd = action.payload.projectId || state.activeProjectId;
+            const newTaskData = action.payload.taskData || action.payload;
+            const newTaskId = newTaskData.id || generateId();
+
             return {
                 ...state,
                 tasks: {
                     ...state.tasks,
-                    [projectId]: { ...state.tasks[projectId], [newTask.id]: newTask },
+                    [projectIdAdd]: {
+                        ...state.tasks[projectIdAdd],
+                        [newTaskId]: {
+                            ...newTaskData,
+                            id: newTaskId,
+                            projectId: projectIdAdd,
+                        },
+                    },
                 },
             };
 
         case 'UPDATE_TASK':
+            const projectIdUpdate = action.payload.projectId || state.activeProjectId;
+            const taskIdUpdate = action.payload.taskId;
+            const updates = action.payload.taskData || action.payload.updates;
+
+            if (!state.tasks[projectIdUpdate]?.[taskIdUpdate]) return state;
+
             return {
                 ...state,
                 tasks: {
                     ...state.tasks,
-                    [action.payload.projectId]: {
-                        ...state.tasks[action.payload.projectId],
-                        [action.payload.taskId]: {
-                            ...state.tasks[action.payload.projectId][action.payload.taskId],
-                            ...action.payload.updates,
+                    [projectIdUpdate]: {
+                        ...state.tasks[projectIdUpdate],
+                        [taskIdUpdate]: {
+                            ...state.tasks[projectIdUpdate][taskIdUpdate],
+                            ...updates,
                         },
                     },
                 },

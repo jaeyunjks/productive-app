@@ -21,7 +21,7 @@ const Board = () => {
     const { state, dispatch } = useContext(AppContext);
     const activeProject = state.projects.find(p => p.id === state.activeProjectId);
 
-    // SEMUA HOOKS WAJIB DI ATAS SINI — SEBELUM ADA RETURN APAPUN
+    // SEMUA HOOKS HARUS DI ATAS — SEBELUM ADA RETURN APAPUN
     const sensors = useSensors(
         useSensor(PointerSensor),
         useSensor(KeyboardSensor, {
@@ -29,18 +29,14 @@ const Board = () => {
         })
     );
 
-    // Early return — SEKARANG AMAN karena semua Hooks sudah dipanggil
-    if (!activeProject) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <p className="text-secondary text-lg">No active project</p>
-            </div>
-        );
-    }
+    // Stabilkan columns dan tasks dengan useMemo agar referensi tidak berubah tiap render
+    const columns = useMemo(() => {
+        return activeProject?.columns || [];
+    }, [activeProject?.columns]);
 
-    // Data preparation — Hooks lagi
-    const columns = activeProject.columns || [];
-    const tasks = state.tasks[state.activeProjectId] || {};
+    const tasks = useMemo(() => {
+        return state.tasks[state.activeProjectId] || {};
+    }, [state.tasks, state.activeProjectId]);
 
     const columnTasks = useMemo(() => {
         return columns.map(col => ({
@@ -50,7 +46,15 @@ const Board = () => {
         }));
     }, [columns, tasks]);
 
-    // handleDragEnd tanpa TypeScript annotation
+    // Early return — SEKARANG 100% AMAN
+    if (!activeProject) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <p className="text-secondary text-lg">No active project</p>
+            </div>
+        );
+    }
+
     const handleDragEnd = (event) => {
         const { active, over } = event;
 
@@ -73,7 +77,6 @@ const Board = () => {
         }
     };
 
-    // Render utama
     return (
         <DndContext
             sensors={sensors}
@@ -87,7 +90,6 @@ const Board = () => {
                             <Column key={col.id} id={col.id} title={col.title} tasks={col.tasks} />
                         ))}
 
-                        {/* Add Column Placeholder */}
                         <div className="bg-surface/50 rounded-2xl border border-border/30 border-dashed w-80 p-6 flex items-center justify-center min-h-[200px]">
                             <button className="text-secondary hover:text-primary font-medium">
                                 + Add another column
