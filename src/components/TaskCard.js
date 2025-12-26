@@ -2,6 +2,8 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useContext } from 'react';
+import { AppContext } from '../contexts/AppContext';
 
 const TaskCard = ({ task, columnId, onEdit }) => {
     const {
@@ -20,6 +22,8 @@ const TaskCard = ({ task, columnId, onEdit }) => {
         transform: CSS.Transform.toString(transform),
         transition,
     };
+    const { state } = useContext(AppContext);
+    const isPlannedToday = state.dailyPlan?.date === new Date().toISOString().split('T')[0] && state.dailyPlan?.taskIds.includes(task.id);
 
     return (
         <div
@@ -28,8 +32,8 @@ const TaskCard = ({ task, columnId, onEdit }) => {
             {...attributes}
             {...listeners}
             onClick={onEdit}  // Klik task buka modal edit
-            className={`bg-background rounded-xl border border-border/70 p-5 shadow-sm hover:shadow-md transition-all cursor-pointer ${isDragging ? 'shadow-2xl rotate-3 scale-105' : ''
-                }`}
+            className={`bg-background rounded-xl border-2 p-5 shadow-sm hover:shadow-md transition-all cursor-pointer ${isPlannedToday ? 'border-accent shadow-lg' : 'border-border/70'
+                } ${isDragging ? 'shadow-2xl rotate-3 scale-105' : ''}`}
         >
             <h4 className="font-medium text-primary mb-2">
                 {task.title || 'Untitled Task'}
