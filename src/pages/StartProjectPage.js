@@ -1,11 +1,11 @@
 // src/pages/StartProjectPage.js
-import React, { useState } from 'react';
-import { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import { useNavigate } from 'react-router-dom';
 
 const StartProjectPage = () => {
-    const { dispatch } = useContext(AppContext);
+    const { state, dispatch } = useContext(AppContext);
+    const { projects } = state;
     const navigate = useNavigate();
 
     const [quickName, setQuickName] = useState('');
@@ -55,6 +55,11 @@ const StartProjectPage = () => {
         alert('Template Gallery with previews coming soon!');
     };
 
+    const handleSelectProject = (projectId) => {
+        dispatch({ type: 'SET_ACTIVE_PROJECT', payload: projectId });
+        navigate('/dashboard');
+    };
+
     return (
         <div className="min-h-screen bg-background animated-background flex flex-col justify-center px-4 py-8 sm:py-12 md:py-16 lg:py-20 xl:py-24">
             {/* Floating Orbs */}
@@ -73,9 +78,9 @@ const StartProjectPage = () => {
                         Organize your ideas, set clear goals, and move forward with intention and calm focus.
                     </p>
                 </header>
+
                 {/* Option Cards */}
                 <div className="grid grid-cols-1 gap-8 md:gap-10 lg:gap-12 md:grid-cols-3">
-
                     {/* Quick Start */}
                     <div
                         className="group bg-surface rounded-3xl border border-border/50 p-6 sm:p-8 md:p-10 lg:p-12 shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
@@ -151,8 +156,35 @@ const StartProjectPage = () => {
                             Browse Templates →
                         </div>
                     </div>
-
                 </div>
+
+                {/* List Existing Projects */}
+                {projects.length > 0 && (
+                    <div className="mt-16 bg-surface rounded-3xl p-10 shadow-xl">
+                        <h2 className="text-3xl font-light text-primary mb-8 text-center">
+                            Your Projects
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                            {projects.map((project) => (
+                                <button
+                                    key={project.id}
+                                    onClick={() => handleSelectProject(project.id)}
+                                    className="bg-background border border-border hover:border-accent rounded-2xl p-6 text-left transition-all shadow-sm hover:shadow-md group"
+                                >
+                                    <h3 className="text-2xl font-medium text-primary mb-2 group-hover:text-accent transition-colors">
+                                        {project.name}
+                                    </h3>
+                                    <p className="text-secondary text-sm">
+                                        Created: {new Date(parseInt(project.id.substring(0, 13))).toLocaleDateString()}
+                                    </p>
+                                    <p className="text-sm text-secondary mt-1">
+                                        Columns: {project.columns?.join(', ') || 'Default'}
+                                    </p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 <footer className="text-center mt-12 sm:mt-16 md:mt-24 lg:mt-32 xl:mt-40 text-sm text-muted">
                     <p className="text-sm md:text-base">
@@ -164,4 +196,4 @@ const StartProjectPage = () => {
     );
 };
 
-export default StartProjectPage; 
+export default StartProjectPage;

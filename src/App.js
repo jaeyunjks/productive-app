@@ -1,7 +1,6 @@
-// src/App.js
-import React from 'react';
+// src/App.js (pastikan seperti ini)
+import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useContext } from 'react';
 import { AppContext } from './contexts/AppContext';
 
 // Pages
@@ -14,20 +13,16 @@ import ProgressSummary from './pages/ProgressSummary';
 
 function App() {
   const { state } = useContext(AppContext);
-  const { projects, activeProjectId } = state;
-
-  // Cek apakah user sudah punya proyek dan ada yang aktif
-  const hasActiveProject = projects.length > 0 && activeProjectId;
+  const { activeProjectId } = state;
 
   return (
     <Router>
       <div className="min-h-screen bg-background text-primary">
         <Routes>
-          {/* Jika sudah ada proyek aktif → langsung ke dashboard, kalau belum → StartProjectPage */}
           <Route
             path="/"
             element={
-              hasActiveProject ? (
+              activeProjectId ? (
                 <Navigate to="/dashboard" replace />
               ) : (
                 <StartProjectPage />
@@ -35,15 +30,16 @@ function App() {
             }
           />
 
-          {/* Dashboard dan semua fitur utama */}
-          <Route path="/dashboard" element={hasActiveProject ? <DashboardLayout /> : <Navigate to="/" replace />}>
+          <Route
+            path="/dashboard/*"
+            element={activeProjectId ? <DashboardLayout /> : <Navigate to="/" replace />}
+          >
             <Route index element={<Board />} />
             <Route path="focus" element={<FocusMode />} />
             <Route path="daily" element={<DailyPlanner />} />
             <Route path="progress" element={<ProgressSummary />} />
           </Route>
 
-          {/* Fallback kalau route tidak ditemukan */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

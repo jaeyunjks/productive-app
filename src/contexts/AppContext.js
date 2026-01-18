@@ -2,22 +2,23 @@
 import { createContext, useReducer, useEffect } from 'react';
 import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
 
-// Helper sederhana untuk generate ID (tanpa library eksternal)
+// Helper untuk generate ID
 const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 const initialState = {
-    projects: [],                    // [{ id, name, type, goal, deadline, columns: [...] }, ...]
-    activeProjectId: null,           // ID proyek yang sedang dibuka
-    boards: {},                      // { projectId: { columns: [...], columnOrder: [...] } }
-    tasks: {},                       // { projectId: { taskId: { ...task data } } }
+    projects: [],
+    activeProjectId: null,
+    boards: {},
+    tasks: {},
     focusMode: { active: false, taskId: null },
-    dailyPlan: { date: null, taskIds: [] },  // Task ID yang dipilih untuk hari ini
+    dailyPlan: { date: null, taskIds: [] },
+    reflections: {},                 // { "YYYY-MM-DD": "reflection text" }
 };
 
 const reducer = (state, action) => {
     switch (action.type) {
         case 'LOAD_STATE':
-            return { ...state, ...action.payload };
+            return { ...initialState, ...action.payload }; // <-- lebih aman, merge dengan initial
 
         case 'CREATE_PROJECT':
             return {
@@ -61,6 +62,8 @@ const reducer = (state, action) => {
                             ...newTaskData,
                             id: newTaskId,
                             projectId: projectIdAdd,
+                            timeSpent: newTaskData.timeSpent || 0,
+                            createdAt: newTaskData.createdAt || new Date().toISOString(),
                         },
                     },
                 },
@@ -87,8 +90,36 @@ const reducer = (state, action) => {
                 },
             };
 
+        case 'LOG_TIME_SPENT':
+            const { taskId, seconds, projectId: pid = state.activeProjectId } = action.payload;
+            if (!state.tasks[pid]?.[taskId]) return state;
+
+            return {
+                ...state,
+                tasks: {
+                    ...state.tasks,
+                    [pid]: {
+                        ...state.tasks[pid],
+                        [taskId]: {
+                            ...state.tasks[pid][taskId],
+                            timeSpent: (state.tasks[pid][taskId].timeSpent || 0) + seconds,
+                        },
+                    },
+                },
+            };
+
+        case 'SAVE_REFLECTION':
+            const { date, text } = action.payload;
+            return {
+                ...state,
+                reflections: {
+                    ...state.reflections,
+                    [date]: text,
+                },
+            };
+
         case 'MOVE_TASK':
-            // Untuk drag & drop nanti
+            // nanti diimplementasikan saat drag-drop
             return state;
 
         case 'SET_FOCUS_MODE':
@@ -107,17 +138,23 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    // Load dari LocalStorage saat app pertama kali jalan
     useEffect(() => {
-        const savedState = loadFromLocalStorage('productiveState');
-        if (savedState) {
-            dispatch({ type: 'LOAD_STATE', payload: savedState });
+        try {
+            const savedState = loadFromLocalStorage('productiveState');
+            if (savedState && typeof savedState === 'object' && !Array.isArray(savedState)) {
+                dispatch({ type: 'LOAD_STATE', payload: savedState });
+            }
+        } catch (err) {
+            console.warn('Failed to load state from localStorage:', err);
         }
     }, []);
 
-    // Simpan ke LocalStorage setiap state berubah
     useEffect(() => {
-        saveToLocalStorage('productiveState', state);
+        try {
+            saveToLocalStorage('productiveState', state);
+        } catch (err) {
+            console.warn('Failed to save state to localStorage:', err);
+        }
     }, [state]);
 
     return (

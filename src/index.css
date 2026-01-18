@@ -80,3 +80,84 @@ body {
     transform: translate(0, 0) scale(1);
   }
 }
+
+/* ==================== Custom React Calendar ==================== */
+.react-calendar {
+  @apply bg-surface border border-border/30 rounded-3xl shadow-xl p-6 w-full max-w-md mx-auto;
+  font-family: inherit;
+}
+
+.react-calendar__navigation {
+  @apply mb-6;
+}
+
+.react-calendar__navigation__label {
+  @apply text-xl font-medium text-primary;
+}
+
+.react-calendar__navigation__arrow {
+  @apply text-2xl text-accent hover:text-accent/80 transition-colors;
+}
+
+.react-calendar__month-view__weekdays {
+  @apply text-sm font-semibold text-secondary uppercase tracking-wide mb-4;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  @apply no-underline;
+}
+
+.react-calendar__tile {
+  @apply bg-transparent rounded-full p-3 text-primary text-base font-medium transition-all duration-200;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  @apply bg-accent/20 text-accent font-semibold;
+}
+
+.react-calendar__tile--now {
+  @apply bg-accent/10 text-accent font-bold;
+}
+
+.react-calendar__tile--active {
+  @apply bg-accent text-white font-bold shadow-md;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  @apply bg-accent/90;
+}
+
+/* Highlight hari dengan task selesai */
+.react-calendar__tile.highlight-done {
+  @apply relative font-bold text-teal-600 dark:text-teal-400;
+}
+
+.react-calendar__tile.highlight-done::after {
+  content: '•';
+  @apply absolute bottom-1 left-1/2 transform -translate-x-1/2 text-teal-500 text-xl;
+}
+
+.react-calendar__tile.highlight-done.react-calendar__tile--active {
+  @apply bg-teal-600 text-white;
+}
+
+.react-calendar__tile.highlight-done:enabled:hover {
+  @apply bg-teal-500/20;
+}
+
+/* Dark mode adjustments (kalau app support dark mode via prefers-color-scheme atau toggle) */
+@media (prefers-color-scheme: dark) {
+  .react-calendar {
+    @apply bg-gray-800 border-gray-700;
+  }
+
+  .react-calendar__tile {
+    @apply text-gray-200;
+  }
+
+  .react-calendar__tile--now {
+    @apply bg-teal-900/30 text-teal-400;
+  }
+}
